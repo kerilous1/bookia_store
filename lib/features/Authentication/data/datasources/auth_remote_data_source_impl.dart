@@ -37,7 +37,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'name':name,
         'email':email,
         'password':password,
-        'confirm_password':confirmPassword,
+        'password_confirmation':confirmPassword,
       }
     );
     return UserModel.fromJson(response.data);

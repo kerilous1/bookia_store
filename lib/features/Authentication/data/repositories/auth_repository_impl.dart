@@ -28,7 +28,13 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(user);
     }catch(e){
       if(e is DioException) {
-        return Left(ServerFailure(e.response?.data['message']??'Something went wrong'));      }
+        final response=e.response?.data;
+        if(response!=null&&response['errors']!=null){
+          final firstError=response['errors'].values.first[0];
+          return Left(ServerFailure(firstError.toString()));
+        }
+        return Left(ServerFailure(e.response?.data['message']??'Something went wrong'));
+      }
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -51,6 +57,11 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(user);
     }catch(e){
       if(e is DioException) {
+        final response=e.response?.data;
+        if(response!=null&&response['errors']!=null){
+          final firstError=response['errors'].values.first[0];
+          return Left(ServerFailure(firstError.toString()));
+        }
         return Left(ServerFailure(e.response?.data['message']??'Something went wrong'));
       }
       return Left(ServerFailure(e.toString()));

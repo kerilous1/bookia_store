@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/services/service_locator.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_validators.dart';
 import '../../../../core/widgets/custom_button.dart';
@@ -86,9 +87,16 @@ class _LoginPageState extends State<LoginPage> {
                     BlocConsumer<AuthCubit,AuthState>(
                       listener: (context,state){
                         if(state is AuthStateSuccess){
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Login successful'),
+                              content: Text('Login successful',style: TextStyle(color: Colors.white)),
+                              duration: Duration(seconds: 1),
+                              backgroundColor: AppColors.primaryBlue,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                              ),
                             ),
                           );
                           // Navigator.pushAndRemoveUntil(
@@ -101,7 +109,13 @@ class _LoginPageState extends State<LoginPage> {
                         else if(state is AuthStateError){
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(state.message),
+                              content: Text(state.message,style: const TextStyle(color: Colors.white)),
+                              duration: const Duration(seconds: 1),
+                              backgroundColor: Colors.redAccent,
+                              behavior: SnackBarBehavior.floating,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                              ),
                             ),
                           );
                         }
@@ -132,9 +146,8 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => BlocProvider.value(
-                                    // هنا بناخد نفس الـ Cubit بتاع شاشة اللوجين ونديه للريجيستر
-                                    value: context.read<AuthCubit>(),
+                                  builder: (_) => BlocProvider(
+                                    create: (context)=>sl<AuthCubit>(),
                                     child: const RegisterPage(),
                                   ),
                                 ),
