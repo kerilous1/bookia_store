@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_validators.dart';
-import '../../../../core/widgets/custom_button.dart';
-import '../../../../core/widgets/custom_text_field.dart';
+import '../widgets/custom_button.dart';
+import '../widgets/custom_text_field.dart';
 import '../cubit/auth_state_cubit.dart';
 
 class RegisterPage extends StatefulWidget {

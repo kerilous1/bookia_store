@@ -1,4 +1,4 @@
-import 'package:bookia_store/core/widgets/custom_text_field.dart';
+import 'package:bookia_store/features/Authentication/presentation/widgets/custom_text_field.dart';
 import 'package:bookia_store/features/Authentication/presentation/pages/register_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_validators.dart';
-import '../../../../core/widgets/custom_button.dart';
+import '../widgets/custom_button.dart';
 import '../cubit/auth_state_cubit.dart';
 
 class LoginPage extends StatefulWidget {
