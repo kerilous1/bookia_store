@@ -8,6 +8,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   AuthRemoteDataSourceImpl(this._dio);
 
+  //implement login function
   @override
   Future<UserModel> login({
     required String email,
@@ -24,6 +25,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     return UserModel.fromJson(response.data);
   }
 
+  //implement register function
   @override
   Future<UserModel> register({
     required String name,
@@ -41,6 +43,28 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
     );
     return UserModel.fromJson(response.data);
+  }
+
+  //implement verify email function
+  @override
+    Future<void> verifyEmail({
+    required String email,
+    required String otp
+    }) async {
+      await Future.delayed(const Duration(seconds: 3));
+      if (otp == '123456') {
+        return;
+      } else {
+        throw Exception('Invalid OTP, try 123456');
+      }
+    }
+
+  //implement resend verify code function
+  @override
+  Future<void> resendVerifyCode() async {
+    await _dio.get(
+        ApiConstants.resendVerifyCode
+    );
   }
 
 }

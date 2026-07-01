@@ -17,4 +17,13 @@ abstract class AuthRepository {
     required String confirmPassword,
   });
 
+  //verify email function
+  Future<Either<Failure,Unit>> verifyEmail({
+    required String email,
+    required String otp,
+});
+
+  //resend verify code function
+  Future<Either<Failure, Unit>> resendVerifyCode();
+
 }

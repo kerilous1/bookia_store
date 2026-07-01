@@ -20,3 +20,9 @@ final class AuthStateError extends AuthState{
   final String message;
   AuthStateError(this.message);
 }
+
+//verify success state
+class AuthStateVerifySuccess extends AuthState {}
+
+//resend success state
+class AuthStateResendSuccess extends AuthState {}

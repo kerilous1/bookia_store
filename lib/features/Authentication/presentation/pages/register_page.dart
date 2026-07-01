@@ -1,10 +1,11 @@
+import 'package:bookia_store/features/Authentication/presentation/pages/verification_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_validators.dart';
-import '../widgets/custom_button.dart';
+import '../../../../core/widgets/custom_button.dart';
 import '../widgets/custom_text_field.dart';
 import '../cubit/auth_state_cubit.dart';
 
@@ -123,6 +124,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     listener: (context, state) {
                       if (ModalRoute.of(context)?.isCurrent == true) {
                         if (state is AuthStateSuccess) {
+                          // 1. إظهار رسالة النجاح
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
@@ -139,6 +141,20 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                             ),
                           );
+
+                          // 2. الانتقال لشاشة التحقق وناخد معانا الإيميل والـ Cubit
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => BlocProvider.value(
+                                value: context.read<AuthCubit>(),
+                                child: VerificationPage(
+                                  email: _emailController.text, // باصينا الإيميل هنا
+                                ),
+                              ),
+                            ),
+                          );
+
                         } else if (state is AuthStateError) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

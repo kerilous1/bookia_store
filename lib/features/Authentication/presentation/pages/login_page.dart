@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_validators.dart';
-import '../widgets/custom_button.dart';
+import '../../../../core/widgets/custom_button.dart';
 import '../cubit/auth_state_cubit.dart';
 
 class LoginPage extends StatefulWidget {

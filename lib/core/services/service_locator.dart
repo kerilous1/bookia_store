@@ -7,6 +7,8 @@ import '../../features/Authentication/data/datasources/auth_remote_data_source_i
 import '../../features/Authentication/data/repositories/auth_repository_impl.dart';
 import '../../features/Authentication/domain/repositories/auth_repository.dart';
 import '../../features/Authentication/domain/usecases/register_usecase.dart';
+import '../../features/Authentication/domain/usecases/resend_verify_code_usecase.dart';
+import '../../features/Authentication/domain/usecases/verify_email_usecase.dart';
 
 final sl=GetIt.instance;
 
@@ -23,12 +25,16 @@ void initServiceLocator(){
   //use cases
   sl.registerLazySingleton(()=>LoginUsecase(sl()));
   sl.registerLazySingleton(()=>RegisterUsecase(sl()));
+  sl.registerLazySingleton(()=>VerifyEmailUsecase(sl()));
+  sl.registerLazySingleton(()=>ResendVerifyCodeUseCase(sl()));
 
   //cubit
   sl.registerFactory<AuthCubit>(
       ()=>AuthCubit(
           loginUseCase: sl(),
-          registerUseCase: sl()
+          registerUseCase: sl(),
+          verifyEmailUsecase: sl(),
+        resendVerifyCodeUseCase: sl(),
       )
   );
 }

@@ -15,4 +15,13 @@ abstract class AuthRemoteDataSource {
     required String password,
     required String confirmPassword,
   });
+
+  //verify email function
+  Future<void> verifyEmail({
+    required String email,
+    required String otp,
+});
+  //resend verify code function
+  Future<void> resendVerifyCode();
+
 }

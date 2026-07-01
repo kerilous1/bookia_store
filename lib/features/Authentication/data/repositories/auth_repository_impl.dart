@@ -1,7 +1,6 @@
 import 'package:bookia_store/features/Authentication/data/datasources/auth_remote_data_source_impl.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-
 import '../../../../core/errors/failures.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -68,5 +67,50 @@ class AuthRepositoryImpl implements AuthRepository {
     }
 
   }
+
+  //implement verify email function
+  @override
+  Future<Either<Failure,Unit>> verifyEmail({
+    required String email,
+    required String otp,
+}) async {
+    try{
+      await _authRemoteDataSource.verifyEmail(
+          email: email,
+          otp: otp
+      );
+      return Right(unit);
+    }catch(e){
+      if(e is DioException) {
+        final response=e.response?.data;
+        if(response!=null&&response['errors']!=null){
+          final firstError=response['errors'].values.first[0];
+          return Left(ServerFailure(firstError.toString()));
+        }
+        return Left(ServerFailure(e.response?.data['message']??'Something went wrong'));
+      }
+      return Left(ServerFailure(e.toString()));
+      }
+  }
+
+  //implement resend verify code function
+  @override
+  Future<Either<Failure, Unit>> resendVerifyCode() async {
+    try {
+      await _authRemoteDataSource.resendVerifyCode();
+      return const Right(unit);
+    } catch (e) {
+      if (e is DioException) {
+        final response = e.response?.data;
+        if (response != null && response['errors'] != null) {
+          final firstError = response['errors'].values.first[0];
+          return Left(ServerFailure(firstError.toString()));
+        }
+        return Left(ServerFailure(e.response?.data['message'] ?? 'Something went wrong'));
+      }
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
 
 }
