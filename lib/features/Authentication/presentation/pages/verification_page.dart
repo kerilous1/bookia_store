@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
 
 import '../../../../core/widgets/custom_button.dart';
+import '../../../../main_layout.dart';
 import '../cubit/auth_state_cubit.dart';
 
 class VerificationPage extends StatefulWidget {
@@ -155,7 +156,11 @@ class _VerificationPageState extends State<VerificationPage> {
                               ),
                             ),
                           );
-                          //TODO: navigate to home page
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (_) => const MainLayout()),
+                                (route) => false,
+                          );
                         }
 
                         //
