@@ -3,8 +3,8 @@
 A modern, highly scalable book store application built with Flutter. The project strictly adheres to **Clean Architecture** principles and **SOLID** guidelines, ensuring maintainability, testability, and a seamless developer experience. 
 
 
-https://github.com/user-attachments/assets/0d84832d-914e-47f0-89b5-18f5bddec713
 
+https://github.com/user-attachments/assets/d2c7c80b-57c0-4608-9494-04057d0ff043
 
 
 ## ✨ Key Features
