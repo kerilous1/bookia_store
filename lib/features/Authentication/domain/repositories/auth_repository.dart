@@ -26,4 +26,7 @@ abstract class AuthRepository {
   //resend verify code function
   Future<Either<Failure, Unit>> resendVerifyCode();
 
+  //logout function
+  Future<Either<Failure, Unit>> logout();
+
 }

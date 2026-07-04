@@ -26,3 +26,6 @@ class AuthStateVerifySuccess extends AuthState {}
 
 //resend success state
 class AuthStateResendSuccess extends AuthState {}
+
+//logout success state
+class AuthStateLogoutSuccess extends AuthState {}

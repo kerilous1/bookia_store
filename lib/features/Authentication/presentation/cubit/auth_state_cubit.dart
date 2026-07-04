@@ -1,3 +1,4 @@
+import 'package:bookia_store/features/Authentication/data/repositories/auth_repository_impl.dart';
 import 'package:bookia_store/features/Authentication/domain/repositories/auth_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,12 +15,14 @@ class AuthCubit extends Cubit<AuthState> {
   final RegisterUsecase registerUseCase;
   final VerifyEmailUsecase verifyEmailUsecase;
   final ResendVerifyCodeUseCase resendVerifyCodeUseCase;
+  final AuthRepository authRepository;
 
   AuthCubit({
     required this.loginUseCase,
     required this.registerUseCase,
     required this.verifyEmailUsecase,
     required this.resendVerifyCodeUseCase,
+    required this.authRepository,
   }) : super(AuthStateInitial());
 
   //login function
@@ -84,5 +87,18 @@ class AuthCubit extends Cubit<AuthState> {
           (failure) => emit(AuthStateError(failure.message)),
           (_) => emit(AuthStateResendSuccess()),
     );
+  }
+
+  //logout function
+  Future<void> logout() async {
+    emit(AuthStateLoading());
+
+    final result = await authRepository.logout();
+
+    result.fold(
+          (faliure)=> emit(AuthStateError(faliure.message)),
+          (_)=>emit(AuthStateLogoutSuccess())
+    );
+
   }
 }

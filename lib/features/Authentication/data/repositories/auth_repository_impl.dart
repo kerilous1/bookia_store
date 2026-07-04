@@ -1,3 +1,4 @@
+import 'package:bookia_store/features/Authentication/data/datasources/auth_local_data_source.dart';
 import 'package:bookia_store/features/Authentication/data/datasources/auth_remote_data_source_impl.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -8,9 +9,13 @@ import '../datasources/auth_remote_data_source.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
 
-  final AuthRemoteDataSource _authRemoteDataSource;
+  final AuthRemoteDataSource authRemoteDataSource;
+  final AuthLocalDataSource authLocalDataSource;
 
-  AuthRepositoryImpl(this._authRemoteDataSource);
+  AuthRepositoryImpl({
+    required this.authRemoteDataSource,
+    required this.authLocalDataSource
+});
 
   //implement login function
   @override
@@ -20,11 +25,13 @@ class AuthRepositoryImpl implements AuthRepository {
 }) async {
 
     try{
-      final user=await _authRemoteDataSource.login(
+      final user=await authRemoteDataSource.login(
           email: email,
           password: password
       );
-      return Right(user);
+
+      await authLocalDataSource.saveToken(user.token);
+          return Right(user);
     }catch(e){
       if(e is DioException) {
         final response=e.response?.data;
@@ -47,13 +54,15 @@ class AuthRepositoryImpl implements AuthRepository {
     required String confirmPassword
   }) async {
     try{
-      final user=await _authRemoteDataSource.register(
+      final user=await authRemoteDataSource.register(
           name: name,
           email: email,
           password: password,
           confirmPassword: confirmPassword
       );
-      return Right(user);
+
+      await authLocalDataSource.saveToken(user.token);
+          return Right(user);
     }catch(e){
       if(e is DioException) {
         final response=e.response?.data;
@@ -75,7 +84,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String otp,
 }) async {
     try{
-      await _authRemoteDataSource.verifyEmail(
+      await authRemoteDataSource.verifyEmail(
           email: email,
           otp: otp
       );
@@ -97,7 +106,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, Unit>> resendVerifyCode() async {
     try {
-      await _authRemoteDataSource.resendVerifyCode();
+      await authRemoteDataSource.resendVerifyCode();
       return const Right(unit);
     } catch (e) {
       if (e is DioException) {
@@ -108,6 +117,17 @@ class AuthRepositoryImpl implements AuthRepository {
         }
         return Left(ServerFailure(e.response?.data['message'] ?? 'Something went wrong'));
       }
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  //implement logout function
+  @override
+  Future<Either<Failure, Unit>> logout() async {
+    try{
+      await authLocalDataSource.deleteToken();
+      return const Right(unit);
+    }catch (e){
       return Left(ServerFailure(e.toString()));
     }
   }

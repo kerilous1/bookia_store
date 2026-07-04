@@ -19,6 +19,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data: {
         'email':email,
         'password':password,
+
       }
     );
 
@@ -51,12 +52,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String email,
     required String otp
     }) async {
+      final String codeToUse = '123456';
+      await _dio.post(
+        ApiConstants.verifyEmail,
+        data: {
+          'email': email,
+          'otp': codeToUse,
+        },
+      );
       await Future.delayed(const Duration(seconds: 3));
-      if (otp == '123456') {
-        return;
-      } else {
-        throw Exception('Invalid OTP, try 123456');
-      }
     }
 
   //implement resend verify code function
