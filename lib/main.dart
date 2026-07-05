@@ -1,22 +1,28 @@
-import 'package:bookia_store/features/Authentication/data/datasources/auth_local_data_source_impl.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/services/service_locator.dart';
+import 'core/utils/app_colors.dart';
 import 'features/Authentication/data/datasources/auth_local_data_source.dart';
-import 'features/Authentication/data/datasources/auth_remote_data_source_impl.dart';
-import 'features/Authentication/data/repositories/auth_repository_impl.dart';
-import 'features/Authentication/domain/usecases/login_usecase.dart';
-import 'features/Authentication/domain/usecases/register_usecase.dart';
 import 'features/Authentication/presentation/cubit/auth_state_cubit.dart';
 import 'features/Authentication/presentation/pages/login_page.dart';
 import 'main_layout.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // ── Set system UI overlay to match dark luxury theme ──
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
+    systemNavigationBarColor: AppColors.surface,
+    systemNavigationBarIconBrightness: Brightness.light,
+  ));
+
   await initServiceLocator();
-  final String? token=await sl<AuthLocalDataSource>().getToken();
-  runApp(MyApp(isLoggedIn: token!=null));
+  final String? token = await sl<AuthLocalDataSource>().getToken();
+  runApp(MyApp(isLoggedIn: token != null));
 }
 
 class MyApp extends StatelessWidget {
@@ -29,11 +35,35 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Bookia Store',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: AppColors.background,
+        colorScheme: const ColorScheme.dark(
+          primary: AppColors.primary,
+          secondary: AppColors.accent,
+          surface: AppColors.surface,
+          error: AppColors.error,
+        ),
+        fontFamily: 'Roboto',
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
+        ),
+        snackBarTheme: SnackBarThemeData(
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          backgroundColor: AppColors.surface,
+          contentTextStyle: const TextStyle(color: Colors.white),
+        ),
+      ),
       home: BlocProvider(
-        create: (context) =>sl<AuthCubit>(),
+        create: (context) => sl<AuthCubit>(),
         child: isLoggedIn ? const MainLayout() : const LoginPage(),
       ),
     );
   }
 }
-

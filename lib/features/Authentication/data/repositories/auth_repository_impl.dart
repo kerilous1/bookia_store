@@ -88,6 +88,7 @@ class AuthRepositoryImpl implements AuthRepository {
           email: email,
           otp: otp
       );
+
       return Right(unit);
     }catch(e){
       if(e is DioException) {

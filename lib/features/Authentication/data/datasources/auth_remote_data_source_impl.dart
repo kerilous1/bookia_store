@@ -57,8 +57,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         ApiConstants.verifyEmail,
         data: {
           'email': email,
-          'otp': codeToUse,
-        },
+          'verify_code': otp == 'test' ? codeToUse : otp,
+        }
       );
       await Future.delayed(const Duration(seconds: 3));
     }

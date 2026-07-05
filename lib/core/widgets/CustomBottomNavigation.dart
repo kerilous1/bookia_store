@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utils/app_colors.dart'; // تأكد من المسار
+import '../utils/app_colors.dart';
 
 class CustomBottomNavigation extends StatelessWidget {
   final int indexSelected;
@@ -22,56 +22,105 @@ class CustomBottomNavigation extends StatelessWidget {
     ];
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
-        color: Colors.white, // خلفية البار
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(25),
-          topRight: Radius.circular(25),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        border: Border(
+          top: BorderSide(
+            color: AppColors.border,
+            width: 0.8,
+          ),
         ),
         boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, -5))
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, -8),
+          ),
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.05),
+            blurRadius: 30,
+            offset: const Offset(0, -10),
+          ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(navItems.length, (index) {
-          bool isSelected = indexSelected == index;
-          return GestureDetector(
-            onTap: () => onItemSelected(index),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOut,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                // لون الخلفية عند الاختيار - عدله ليكون لون تطبيقك الأساسي
-                color: isSelected
-                    ? AppColors.primaryBlue.withOpacity(0.1)
-                    : Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    navItems[index]['icon'],
-                    color: isSelected ? AppColors.primaryBlue : Colors.grey,
-                    size: 24,
-                  ),
-                  if (isSelected) ...[
-                    const SizedBox(width: 8),
-                    Text(
-                      navItems[index]['label'],
-                      style: TextStyle(
-                        color: AppColors.primaryBlue,
-                        fontWeight: FontWeight.bold,
+      child: SafeArea(
+        top: false,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List.generate(navItems.length, (index) {
+            bool isSelected = indexSelected == index;
+            return GestureDetector(
+              onTap: () => onItemSelected(index),
+              behavior: HitTestBehavior.opaque,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 350),
+                curve: Curves.easeInOut,
+                padding: EdgeInsets.symmetric(
+                  horizontal: isSelected ? 18 : 12,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  gradient: isSelected
+                      ? const LinearGradient(
+                          colors: [
+                            Color(0x337C3AED),
+                            Color(0x22DB2777),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : null,
+                  borderRadius: BorderRadius.circular(16),
+                  border: isSelected
+                      ? Border.all(
+                          color: AppColors.primary.withOpacity(0.3),
+                          width: 1,
+                        )
+                      : null,
+                ),
+                child: Row(
+                  children: [
+                    ShaderMask(
+                      shaderCallback: (bounds) => LinearGradient(
+                        colors: isSelected
+                            ? [
+                                const Color(0xFF7C3AED),
+                                const Color(0xFFDB2777),
+                              ]
+                            : [AppColors.textMuted, AppColors.textMuted],
+                      ).createShader(bounds),
+                      child: Icon(
+                        navItems[index]['icon'],
+                        color: Colors.white,
+                        size: 24,
                       ),
                     ),
-                  ]
-                ],
+                    if (isSelected) ...[
+                      const SizedBox(width: 8),
+                      ShaderMask(
+                        shaderCallback: (bounds) => const LinearGradient(
+                          colors: [
+                            Color(0xFF7C3AED),
+                            Color(0xFFDB2777),
+                          ],
+                        ).createShader(bounds),
+                        child: Text(
+                          navItems[index]['label'],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          }),
+        ),
       ),
     );
   }

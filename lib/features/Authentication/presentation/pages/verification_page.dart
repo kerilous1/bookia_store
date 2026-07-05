@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
 
+import '../../../../core/widgets/animated_background.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../main_layout.dart';
 import '../cubit/auth_state_cubit.dart';
@@ -16,248 +17,343 @@ class VerificationPage extends StatefulWidget {
   State<VerificationPage> createState() => _VerificationPageState();
 }
 
-class _VerificationPageState extends State<VerificationPage> {
+class _VerificationPageState extends State<VerificationPage>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _otpController = TextEditingController();
+
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _fadeController, curve: Curves.easeOut),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.12),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: _fadeController, curve: Curves.easeOutCubic),
+    );
+    _fadeController.forward();
+  }
 
   //dispose controller
   @override
   void dispose() {
     _otpController.dispose();
+    _fadeController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // ── Premium Pin Theme ──
     final defaultPinTheme = PinTheme(
-      width: 50,
-      height: 50,
+      width: 52,
+      height: 56,
       textStyle: const TextStyle(
-        fontSize: 20,
-        color: AppColors.primaryBlue,
-        fontWeight: FontWeight.w600,
+        fontSize: 22,
+        color: AppColors.textPrimary,
+        fontWeight: FontWeight.w700,
       ),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.primaryBlue),
-        borderRadius: BorderRadius.circular(10),
+        color: AppColors.surface,
+        border: Border.all(color: AppColors.border, width: 1.2),
+        borderRadius: BorderRadius.circular(14),
       ),
     );
+
+    final focusedPinTheme = defaultPinTheme.copyWith(
+      decoration: BoxDecoration(
+        color: AppColors.surfaceLight,
+        border: Border.all(color: AppColors.primary, width: 2),
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.2),
+            blurRadius: 12,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+    );
+
     return Scaffold(
       backgroundColor: AppColors.background,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: Padding(
           padding: const EdgeInsets.all(8),
-          child: InkWell(
+          child: GestureDetector(
             onTap: () => Navigator.pop(context),
             child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: AppColors.surface,
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 10,
-                    offset: Offset(0, 10),
-                  ),
-                ],
+                border: Border.all(color: AppColors.border, width: 1),
               ),
               child: const Icon(
                 Icons.arrow_back_ios_new,
-                color: AppColors.primaryBlue,
+                color: AppColors.textPrimary,
                 size: 18,
               ),
             ),
           ),
         ),
       ),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Almost there',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textDark,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  RichText(
-                    text: TextSpan(
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: AppColors.textDark,
-                        height: 1.5,
-                      ),
+      body: AnimatedBackground(
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const TextSpan(
-                          text:
-                          'Please enter the 6-digit code sent to your\nemail ',
-                        ),
-                        TextSpan(
-                          text: widget.email,
-                          style: const TextStyle(
-                            color: AppColors.textDark,
-                            fontWeight: FontWeight.bold,
+                        // ── Shield Icon with Glow ──
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color(0xFF7C3AED),
+                                Color(0xFFDB2777),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primary.withOpacity(0.3),
+                                blurRadius: 20,
+                                spreadRadius: 2,
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.mail_outline_rounded,
+                            color: Colors.white,
+                            size: 36,
                           ),
                         ),
-                        const TextSpan(text: ' for verification'),
+                        const SizedBox(height: 32),
+
+                        ShaderMask(
+                          shaderCallback: (bounds) => const LinearGradient(
+                            colors: [
+                              Color(0xFFF5F3FF),
+                              Color(0xFFA78BFA),
+                            ],
+                          ).createShader(bounds),
+                          child: const Text(
+                            'Almost There',
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppColors.textSecondary,
+                              height: 1.6,
+                            ),
+                            children: [
+                              const TextSpan(
+                                text:
+                                    'Please enter the 6-digit code sent to\n',
+                              ),
+                              TextSpan(
+                                text: widget.email,
+                                style: const TextStyle(
+                                  color: AppColors.primaryLight,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 44),
+
+                        Center(
+                          child: Pinput(
+                            length: 6,
+                            controller: _otpController,
+                            defaultPinTheme: defaultPinTheme,
+                            focusedPinTheme: focusedPinTheme,
+                            submittedPinTheme: defaultPinTheme.copyWith(
+                              decoration: BoxDecoration(
+                                color: AppColors.surfaceLight,
+                                border: Border.all(
+                                    color: AppColors.primaryLight, width: 1.5),
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null ||
+                                  value.isEmpty ||
+                                  value.length < 6) {
+                                return 'Please enter a valid OTP';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 44),
+
+                        BlocConsumer<AuthCubit, AuthState>(
+                          listener: (context, state) {
+                            if (ModalRoute.of(context)?.isCurrent == true) {
+                              // 1. حالة نجاح التحقق من الإيميل
+                              if (state is AuthStateVerifySuccess) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text(
+                                        'Email verified successfully'),
+                                    backgroundColor: AppColors.success,
+                                    duration: const Duration(seconds: 1),
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                );
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => const MainLayout()),
+                                  (route) => false,
+                                );
+                              }
+
+                              //
+                              else if (state is AuthStateResendSuccess) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text(
+                                        'Code resent successfully! Check your email.'),
+                                    backgroundColor: AppColors.success,
+                                    duration: const Duration(seconds: 2),
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                );
+                              } else if (state is AuthStateError) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      state.message,
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    ),
+                                    duration: const Duration(seconds: 2),
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    backgroundColor: AppColors.error,
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          builder: (context, state) {
+                            return CustomButton(
+                              text: 'Verify',
+                              isLoading: state is AuthStateLoading,
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  context.read<AuthCubit>().verifyEmail(
+                                        email: widget.email,
+                                        otp: _otpController.text,
+                                      );
+                                }
+                              },
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 36),
+
+                        Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  'Didn\'t receive any code? ',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    context
+                                        .read<AuthCubit>()
+                                        .resendVerifyCode();
+                                  },
+                                  child: ShaderMask(
+                                    shaderCallback: (bounds) =>
+                                        const LinearGradient(
+                                      colors: [
+                                        Color(0xFF7C3AED),
+                                        Color(0xFFDB2777),
+                                      ],
+                                    ).createShader(bounds),
+                                    child: const Text(
+                                      'Resend Again',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            const Text(
+                              'Request new code in 00:30s',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textMuted,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 40),
-
-                  Center(
-                    child: Pinput(
-                      length: 6,
-                      controller: _otpController,
-                      defaultPinTheme: defaultPinTheme,
-                      focusedPinTheme: defaultPinTheme.copyDecorationWith(
-                        border: Border.all(color: AppColors.primaryBlue),
-                      ),
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.length < 6) {
-                          return 'Please enter a valid OTP';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-
-                  BlocConsumer<AuthCubit, AuthState>(
-                    listener: (context, state) {
-                      if (ModalRoute.of(context)?.isCurrent == true) {
-
-                        // 1. حالة نجاح التحقق من الإيميل
-                        if (state is AuthStateVerifySuccess) {
-                          ScaffoldMessenger.of(context).clearSnackBars();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Email verified successfully'),
-                              backgroundColor: AppColors.primaryBlue,
-                              duration: Duration(seconds: 1),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                            ),
-                          );
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (_) => const MainLayout()),
-                                (route) => false,
-                          );
-                        }
-
-                        //
-                        else if (state is AuthStateResendSuccess) {
-                          ScaffoldMessenger.of(context).clearSnackBars();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Code resent successfully! Check your email.'),
-                              backgroundColor: AppColors.primaryBlue,
-                              duration: Duration(seconds: 2),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-
-                        else if (state is AuthStateError) {
-                          ScaffoldMessenger.of(context).clearSnackBars();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                state.message,
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                              duration: const Duration(seconds: 2),
-                              behavior: SnackBarBehavior.floating,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              backgroundColor: Colors.redAccent,
-                            ),
-                          );
-                        }
-                      }
-                    },
-                    builder: (context, state) {
-                      return CustomButton(
-                        text: 'Verify',
-                        isLoading: state is AuthStateLoading,
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            context.read<AuthCubit>().verifyEmail(
-                              email: widget.email,
-                              otp: _otpController.text,
-                            );
-                          }
-                        },
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 30),
-
-                  Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Didn\'t receive any code? ',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.textGrey,
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              context.read<AuthCubit>().resendVerifyCode();
-                            },
-                            child: const Text(
-                              'Resend Again',
-                              style: TextStyle(
-                                color: AppColors.primaryBlue,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                                decorationColor: AppColors.primaryBlue, // وحدنا لون الخط اللي تحتها
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Request new code in 00:30s',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textGrey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
           ),
