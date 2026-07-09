@@ -6,6 +6,7 @@ import 'core/utils/app_colors.dart';
 import 'features/Authentication/data/datasources/auth_local_data_source.dart';
 import 'features/Authentication/presentation/cubit/auth_state_cubit.dart';
 import 'features/Authentication/presentation/pages/login_page.dart';
+import 'features/cart/presentation/cubit/cart_state_cubit.dart';
 import 'main_layout.dart';
 
 
@@ -33,36 +34,42 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Bookia Store',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: AppColors.background,
-        colorScheme: const ColorScheme.dark(
-          primary: AppColors.primary,
-          secondary: AppColors.accent,
-          surface: AppColors.surface,
-          error: AppColors.error,
-        ),
-        fontFamily: 'Roboto',
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          systemOverlayStyle: SystemUiOverlayStyle.light,
-        ),
-        snackBarTheme: SnackBarThemeData(
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context)=>sl<AuthCubit>()),
+        BlocProvider(create: (context)=>sl<CartStateCubit>())
+      ],
+      child: MaterialApp(
+        title: 'Bookia Store',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          brightness: Brightness.dark,
+          scaffoldBackgroundColor: AppColors.background,
+          colorScheme: const ColorScheme.dark(
+            primary: AppColors.primary,
+            secondary: AppColors.accent,
+            surface: AppColors.surface,
+            error: AppColors.error,
           ),
-          backgroundColor: AppColors.surface,
-          contentTextStyle: const TextStyle(color: Colors.white),
+          fontFamily: 'Roboto',
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            systemOverlayStyle: SystemUiOverlayStyle.light,
+          ),
+          snackBarTheme: SnackBarThemeData(
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            backgroundColor: AppColors.surface,
+            contentTextStyle: const TextStyle(color: Colors.white),
+          ),
         ),
-      ),
-      home: BlocProvider(
-        create: (context) => sl<AuthCubit>(),
-        child: isLoggedIn ? const MainLayout() : const LoginPage(),
+        home: BlocProvider(
+          create: (context) => sl<AuthCubit>(),
+          child: isLoggedIn ? const MainLayout() : const LoginPage(),
+        ),
       ),
     );
   }

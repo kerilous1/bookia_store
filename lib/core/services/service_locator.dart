@@ -25,7 +25,6 @@ import '../../features/Authentication/domain/usecases/resend_verify_code_usecase
 import '../../features/Authentication/domain/usecases/verify_email_usecase.dart';
 import '../../features/home/data/datasources/home_remote_data_source_impl.dart';
 import '../network/api_constants.dart';
-
 final sl=GetIt.instance;
 
 Future<void> initServiceLocator()async {
