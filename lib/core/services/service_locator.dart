@@ -1,9 +1,19 @@
 import 'package:bookia_store/features/Authentication/domain/usecases/login_usecase.dart';
 import 'package:bookia_store/features/Authentication/presentation/cubit/auth_state_cubit.dart';
+import 'package:bookia_store/features/cart/presentation/cubit/cart_state_cubit.dart';
+import 'package:bookia_store/features/home/data/datasources/home_remote_data_source.dart';
+import 'package:bookia_store/features/home/data/repositories/home_repository_impl.dart';
+import 'package:bookia_store/features/home/domain/repositories/home_repository.dart';
+import 'package:bookia_store/features/home/domain/usecases/get_best_sellers_usecase.dart';
+import 'package:bookia_store/features/home/domain/usecases/get_categories_usecase.dart';
+import 'package:bookia_store/features/home/domain/usecases/get_new_arrivals_usecase.dart';
+import 'package:bookia_store/features/home/domain/usecases/get_sliders_usecase.dart';
+import 'package:bookia_store/features/home/presentation/cubit/home_cubit.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+
 import '../../features/Authentication/data/datasources/auth_local_data_source.dart';
 import '../../features/Authentication/data/datasources/auth_local_data_source_impl.dart';
 import '../../features/Authentication/data/datasources/auth_remote_data_source.dart';
@@ -13,6 +23,7 @@ import '../../features/Authentication/domain/repositories/auth_repository.dart';
 import '../../features/Authentication/domain/usecases/register_usecase.dart';
 import '../../features/Authentication/domain/usecases/resend_verify_code_usecase.dart';
 import '../../features/Authentication/domain/usecases/verify_email_usecase.dart';
+import '../../features/home/data/datasources/home_remote_data_source_impl.dart';
 import '../network/api_constants.dart';
 
 final sl=GetIt.instance;
@@ -23,10 +34,10 @@ Future<void> initServiceLocator()async {
 
   //just for one time
   sl.registerLazySingleton<Dio>(
-      (){
+          (){
         final dio=Dio(
           BaseOptions(
-            baseUrl: ApiConstants.baseurl
+              baseUrl: ApiConstants.baseurl
           ),
         );
         dio.interceptors.add(
@@ -44,6 +55,8 @@ Future<void> initServiceLocator()async {
       }
   );
 
+
+//Auth Feature
 
   //data source
   sl.registerLazySingleton<AuthRemoteDataSource>(()=>AuthRemoteDataSourceImpl(sl()));
@@ -73,4 +86,37 @@ Future<void> initServiceLocator()async {
         authRepository: sl(),
       )
   );
+
+
+//Home Feature
+
+  //data sources
+  sl.registerLazySingleton<HomeRemoteDataSource>(
+      ()=>HomeRemoteDataSourceImpl(sl()),
+  );
+
+  //repositories
+  sl.registerLazySingleton<HomeRepository>(
+      ()=>HomeRepositoryImpl(sl()),
+  );
+
+  //use cases
+  sl.registerLazySingleton(()=>GetSlidersUsecase(sl()));
+  sl.registerLazySingleton(()=>GetCategoriesUsecase(sl()));
+  sl.registerLazySingleton(()=>GetBestSellersUsecase(sl()));
+  sl.registerLazySingleton(()=>GetNewArrivalsUsecase(sl()));
+
+  //cubit
+  sl.registerFactory(
+      ()=>HomeCubit(
+          getSlidersUsecase: sl(),
+          getCategoriesUsecase: sl(),
+          getNewArrivalsUsecase: sl(),
+          getBestSellersUsecase: sl(),
+      )
+  );
+
+//cart & saved feature
+sl.registerLazySingleton(()=>CartStateCubit());
+
 }

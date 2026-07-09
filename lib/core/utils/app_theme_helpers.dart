@@ -18,12 +18,7 @@ class AppGradients {
 
   // ── LottieFiles-inspired Creative Gradient ──
   static const LinearGradient creative = LinearGradient(
-    colors: [
-      Color(0xFF7C3AED),
-      Color(0xFFFF2E93),
-      Color(0xFFFF6B6B),
-      Color(0xFFFFD700),
-    ],
+    colors: [Color(0xFF7C3AED), Color(0xFFFF2E93), Color(0xFFFF6B6B), Color(0xFFFFD700),],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
