@@ -62,4 +62,15 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
             (json) => ProductModel.fromJson(json)
     ).toList();
   }
+
+  @override
+  Future<List<ProductModel>> searchProducts(String keyword) async {
+    final response=await _dio.get(
+      ApiConstants.searchProducts,
+      queryParameters: {'name':keyword},
+    );
+
+    final List<dynamic> data=response.data['data']['products'];
+    return data.map<ProductModel>((json) => ProductModel.fromJson(json as Map<String, dynamic>)).toList();
+  }
 }
