@@ -2,6 +2,7 @@ import 'package:bookia_store/features/home/data/datasources/home_remote_data_sou
 import 'package:bookia_store/features/home/data/models/category_model.dart';
 import 'package:bookia_store/features/home/domain/entities/category_entity.dart';
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../../domain/entities/product_entity.dart';
@@ -52,6 +53,17 @@ class HomeRepositoryImpl implements HomeRepository {
       final newArrivals = await _remoteDataSource.getNewArrivals();
       return Right(newArrivals);
     } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  //search products from remote data source
+  @override
+  Future<Either<Failure, List<ProductEntity>>> searchProducts(String keyword) async {
+    try{
+      final products=await _remoteDataSource.searchProducts(keyword);
+      return Right(products);
+    }catch(e){
       return Left(ServerFailure(e.toString()));
     }
   }
