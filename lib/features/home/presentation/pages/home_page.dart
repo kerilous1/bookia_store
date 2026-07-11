@@ -2,67 +2,106 @@ import 'package:bookia_store/core/utils/app_colors.dart';
 import 'package:bookia_store/core/utils/app_theme_helpers.dart';
 import 'package:bookia_store/features/home/presentation/cubit/home_cubit.dart';
 import 'package:bookia_store/features/home/presentation/cubit/home_state.dart';
+import 'package:bookia_store/features/home/presentation/pages/search_page.dart';
 import 'package:bookia_store/features/home/presentation/widgets/home_slider_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/services/service_locator.dart';
+import '../../domain/entities/product_entity.dart';
+import '../cubit/search_cubit.dart';
 import '../widgets/categories_section.dart';
 import '../widgets/products_section.dart';
+import 'all_products_page.dart';
 import 'home_shimmer_loading.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedCategoryIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context)=> sl<HomeCubit>()..getHomeData(),
+      create: (context) => sl<HomeCubit>()..getHomeData(),
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
           title: ShaderMask(
-            shaderCallback: (bounds) => AppGradients.primary.createShader(bounds),
+            shaderCallback: (bounds) =>
+                AppGradients.primary.createShader(bounds),
             child: const Text(
               'BOOKIA STORE',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 1.5,
-                color: Colors.white
+                color: Colors.white,
               ),
             ),
           ),
           actions: [
+            //
             IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.search_rounded, color: AppColors.textPrimary, size: 26),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => sl<SearchCubit>(), // Initialize SearchCubit
+                      child: const SearchPage(),
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(
+                  Icons.search_rounded,
+                  color: AppColors.textPrimary,
+                  size: 26
+              ),
             ),
+
             IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.notifications_none_rounded, color: AppColors.textPrimary, size: 26),
+              onPressed: () {}, //TODO notification feature
+              icon: const Icon(
+                Icons.notifications_none_rounded,
+                color: AppColors.textPrimary,
+                size: 26,
+              ),
             ),
             const SizedBox(width: 8),
           ],
         ),
-        
-        body:  BlocBuilder<HomeCubit,HomeState>(
-          builder: (context,state){
-            if(state is HomeLoding){
+
+        body: BlocBuilder<HomeCubit, HomeState>(
+          builder: (context, state) {
+            if (state is HomeLoding) {
               return const HomeShimmerLoading();
-            }else if(state is HomeError){
+            } else if (state is HomeError) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.error_outline_rounded,color:AppColors.error,size: 50,),
+                    const Icon(
+                      Icons.error_outline_rounded,
+                      color: AppColors.error,
+                      size: 50,
+                    ),
                     const SizedBox(height: 16),
                     Text(
                       state.message,
-                      style: const TextStyle(color: AppColors.textSecondary,fontSize: 16),
+                      style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 16,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Container(
@@ -74,62 +113,171 @@ class HomePage extends StatelessWidget {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent
+                          shadowColor: Colors.transparent,
                         ),
-                          onPressed: ()=>context.read<HomeCubit>().getHomeData(),
-                          child: const Text(
-                            'Retry',style: TextStyle(
-                              color: AppColors.primaryDark,
-                              fontWeight: FontWeight.bold
-                          ),)
+                        onPressed: () =>
+                            context.read<HomeCubit>().getHomeData(),
+                        child: const Text(
+                          'Retry',
+                          style: TextStyle(
+                            color: AppColors.primaryDark,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               );
-            }else if(state is HomeLoaded){
+            } else if (state is HomeLoaded) {
+              //categorie name
+              final selectedCategory = state.categories.isNotEmpty
+                  ? state.categories[_selectedCategoryIndex]
+                  : null;
+
+              //filter products by category
+              final allAvailableProducts = [
+                ...state.bestSellers,
+                ...state.newArrivals,
+              ];
+              final List<ProductEntity> filteredProducts =
+                  selectedCategory == null
+                  ? []
+                  : allAvailableProducts.where((product) {
+                      final catField =
+                          product.category?.toString().toLowerCase() ?? '';
+                      final catName = selectedCategory.name.toLowerCase();
+                      final catId = selectedCategory.id.toString();
+
+                      return catField == catName ||
+                          catField == catId ||
+                          catField.contains(catName);
+                    }).toList();
+
               return RefreshIndicator(
                 color: AppColors.accent,
-                  backgroundColor: AppColors.surface,
-                  onRefresh: () async {
+                backgroundColor: AppColors.surface,
+                onRefresh: () async {
                   await context.read<HomeCubit>().getHomeData();
-                  },
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        HomeSliderWidget(sliders: state.sliders),
-                        const SizedBox(height: 28),
+                },
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      HomeSliderWidget(sliders: state.sliders),
+                      const SizedBox(height: 28),
 
-                        CategoriesSection(categories: state.categories),
-                        const SizedBox(height: 28),
+                      CategoriesSection(
+                        categories: state.categories,
+                        selectedIndex: _selectedCategoryIndex,
+                        onCategorySelected: (index) {
+                          setState(() {
+                            _selectedCategoryIndex = index;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 20),
 
-                        ProductsSection(
-                          title: 'Best Sellers',
-                          products: state.bestSellers,
-                          onSeeAll: (){},
-                        ),
-                        const SizedBox(height: 28),
+                      if (selectedCategory != null) ...[
+                        if (filteredProducts.isEmpty)
+                          Container(
+                            width: double.infinity,
+                            margin: const EdgeInsets.symmetric(horizontal: 20),
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: AppColors.surface,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: AppColors.border),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'No products found in "${selectedCategory.name}" right now',
+                                style: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                          )
+                        else ...[
 
-                        ProductsSection(
-                          title: 'New Arrivals',
-                          products: state.newArrivals,
-                          onSeeAll: (){},
-                        ),
-                        const SizedBox(height: 28),
+                          //filtered products
+                          ProductsSection(
+                            title: selectedCategory.name,
+                            products: filteredProducts,
+                            onSeeAll: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context)=> AllProductsPage(
+                                      categoryName: selectedCategory.name,
+                                      products: filteredProducts,
+                                    )
+                                )
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 16),
 
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Divider(
+                              color: AppColors.border,
+                              thickness: 1,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                        ],
                       ],
-                    ),
+
+                      //best sellers & new arrivals
+                      ProductsSection(
+                        title: 'Best Sellers ',
+                        products: state.bestSellers,
+                        onSeeAll: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context)=> AllProductsPage(
+                                    categoryName: 'Best Sellers',
+                                    products: state.bestSellers
+                                )
+                            )
+
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 28),
+
+                      ProductsSection(
+                        title: 'New Arrivals ',
+                        products: state.newArrivals,
+                        onSeeAll: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context)=> AllProductsPage(
+                                      categoryName: 'New Arrivals',
+                                      products: state.newArrivals
+                                  )
+                              )
+
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 28),
+                    ],
                   ),
+                ),
               );
             }
             return const SizedBox.shrink();
-          }
+          },
         ),
       ),
     );
-    
   }
 }
