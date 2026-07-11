@@ -14,5 +14,6 @@ class ApiConstants {
   static const String newArrivals='$baseurl/products-new-arrivals';
   static const String bestSellers='$baseurl/products-bestseller';
 
+  static const String searchProducts = '$baseurl/products-search';
 
 }
