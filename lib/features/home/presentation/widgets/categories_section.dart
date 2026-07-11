@@ -7,10 +7,14 @@ import '../../domain/entities/category_entity.dart';
 
 class CategoriesSection extends StatelessWidget {
   final List<CategoryEntity> categories;
+  final int selectedIndex;
+  final ValueChanged<int> onCategorySelected;
 
   const CategoriesSection({
     super.key,
-    required this.categories
+    required this.categories,
+    required this.selectedIndex,
+    required this.onCategorySelected
   });
 
   @override
@@ -44,26 +48,30 @@ class CategoriesSection extends StatelessWidget {
             itemBuilder: (context,index){
 
               final category=categories[index];
-              final isSelected=index==0;
+              final isSelected=index==selectedIndex;
 
-              return Container(
-                margin: const EdgeInsets.only(right: 12),
-                padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 10),
-                decoration: BoxDecoration(
-                  gradient: isSelected? AppGradients.primary : AppGradients.glass,
-                  borderRadius: BorderRadius.circular(25),
-                  border: Border.all(
-                    color: isSelected ? Colors.transparent : AppColors.border,width: 1.2
+              return GestureDetector(
+                onTap: ()=>onCategorySelected(index),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.only(right: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 10),
+                  decoration: BoxDecoration(
+                    gradient: isSelected? AppGradients.primary : AppGradients.glass,
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(
+                      color: isSelected ? Colors.transparent : AppColors.border,width: 1.2
+                    ),
+                    boxShadow: isSelected ? AppShadows.glowPurple : null,
                   ),
-                  boxShadow: isSelected ? AppShadows.glowPurple : null,
-                ),
-                child: Center(
-                  child: Text(
-                    category.name,
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
+                  child: Center(
+                    child: Text(
+                      category.name,
+                      style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),

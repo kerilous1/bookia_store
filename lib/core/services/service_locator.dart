@@ -8,7 +8,9 @@ import 'package:bookia_store/features/home/domain/usecases/get_best_sellers_usec
 import 'package:bookia_store/features/home/domain/usecases/get_categories_usecase.dart';
 import 'package:bookia_store/features/home/domain/usecases/get_new_arrivals_usecase.dart';
 import 'package:bookia_store/features/home/domain/usecases/get_sliders_usecase.dart';
+import 'package:bookia_store/features/home/domain/usecases/search_products_usecase.dart';
 import 'package:bookia_store/features/home/presentation/cubit/home_cubit.dart';
+import 'package:bookia_store/features/home/presentation/cubit/search_cubit.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -100,12 +102,13 @@ Future<void> initServiceLocator()async {
   );
 
   //use cases
-  sl.registerLazySingleton(()=>GetSlidersUsecase(sl()));
-  sl.registerLazySingleton(()=>GetCategoriesUsecase(sl()));
-  sl.registerLazySingleton(()=>GetBestSellersUsecase(sl()));
-  sl.registerLazySingleton(()=>GetNewArrivalsUsecase(sl()));
+  sl.registerLazySingleton(()=>GetSlidersUsecase(sl()));//slider usecase
+  sl.registerLazySingleton(()=>GetCategoriesUsecase(sl()));//category usecase
+  sl.registerLazySingleton(()=>GetBestSellersUsecase(sl()));//best sellers usecase
+  sl.registerLazySingleton(()=>GetNewArrivalsUsecase(sl()));//new arrivals usecase
+  sl.registerLazySingleton(()=>SearchProductsUsecase(sl()));//search usecase
 
-  //cubit
+  // home cubits
   sl.registerFactory(
       ()=>HomeCubit(
           getSlidersUsecase: sl(),
@@ -113,6 +116,10 @@ Future<void> initServiceLocator()async {
           getNewArrivalsUsecase: sl(),
           getBestSellersUsecase: sl(),
       )
+  );
+  //search cubit
+  sl.registerFactory(
+      ()=>SearchCubit(sl())
   );
 
 //cart & saved feature
