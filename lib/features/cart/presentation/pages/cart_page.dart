@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_theme_helpers.dart';
+import 'checkout_dialog.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -180,7 +181,7 @@ class CartPage extends StatelessWidget {
                             ),
                           ),
                           onPressed: () {
-                            //TODO: Implement checkout logic
+                            showCheckoutDialog(context);
                           },
                           child: const Text(
                             'Checkout',
