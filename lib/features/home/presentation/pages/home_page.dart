@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/services/service_locator.dart';
+import '../../../cart/presentation/cubit/cart_state_cubit.dart';
 import '../../domain/entities/product_entity.dart';
 import '../cubit/search_cubit.dart';
 import '../widgets/categories_section.dart';
@@ -26,6 +27,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedCategoryIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+
+  }
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

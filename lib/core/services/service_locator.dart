@@ -1,5 +1,6 @@
 import 'package:bookia_store/features/Authentication/domain/usecases/login_usecase.dart';
 import 'package:bookia_store/features/Authentication/presentation/cubit/auth_state_cubit.dart';
+import 'package:bookia_store/features/cart/data/datasources/cart_remote_data_source.dart';
 import 'package:bookia_store/features/cart/presentation/cubit/cart_state_cubit.dart';
 import 'package:bookia_store/features/home/data/datasources/home_remote_data_source.dart';
 import 'package:bookia_store/features/home/data/repositories/home_repository_impl.dart';
@@ -25,7 +26,10 @@ import '../../features/Authentication/domain/repositories/auth_repository.dart';
 import '../../features/Authentication/domain/usecases/register_usecase.dart';
 import '../../features/Authentication/domain/usecases/resend_verify_code_usecase.dart';
 import '../../features/Authentication/domain/usecases/verify_email_usecase.dart';
+import '../../features/cart/data/cart_repository_impl.dart';
+import '../../features/cart/domain/repositories/cart_repository.dart';
 import '../../features/home/data/datasources/home_remote_data_source_impl.dart';
+import '../../features/saved/presentation/cubit/saved_cubit.dart';
 import '../network/api_constants.dart';
 final sl=GetIt.instance;
 
@@ -123,6 +127,12 @@ Future<void> initServiceLocator()async {
   );
 
 //cart & saved feature
-sl.registerLazySingleton(()=>CartStateCubit());
+sl.registerLazySingleton<CartRemoteDataSource>(()=>CartRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<CartRepository>(() => CartRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton(() => CartStateCubit(cartRepository: sl()));
 
+//saved feature
+sl.registerLazySingleton(
+    ()=>SavedCubit()
+);
 }

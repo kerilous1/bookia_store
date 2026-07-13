@@ -1,6 +1,9 @@
+import 'package:bookia_store/features/saved/presentation/cubit/saved_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'core/services/service_locator.dart';
 import 'core/utils/app_colors.dart';
 import 'features/Authentication/data/datasources/auth_local_data_source.dart';
@@ -13,6 +16,10 @@ import 'main_layout.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await Hive.initFlutter();
+  await Hive.openBox('cart_box');
+  await Hive.openBox('wishlist_box');
+
   // ── Set system UI overlay to match dark luxury theme ──
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
@@ -20,6 +27,7 @@ void main() async {
     systemNavigationBarColor: AppColors.surface,
     systemNavigationBarIconBrightness: Brightness.light,
   ));
+
 
   await initServiceLocator();
   final String? token = await sl<AuthLocalDataSource>().getToken();
@@ -37,7 +45,8 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context)=>sl<AuthCubit>()),
-        BlocProvider(create: (context)=>sl<CartStateCubit>())
+        BlocProvider(create: (context)=>sl<CartStateCubit>()),
+        BlocProvider(create: (context)=>sl<SavedCubit>()),
       ],
       child: MaterialApp(
         title: 'Bookia Store',

@@ -16,4 +16,7 @@ class ApiConstants {
 
   static const String searchProducts = '$baseurl/products-search';
 
+  static const String showWishlist = '$baseurl/wishlist';
+  static const String addWishlist = '$baseurl/add-to-wishlist';
+  static const String removeWishlist = '$baseurl/remove-from-wishlist';
 }

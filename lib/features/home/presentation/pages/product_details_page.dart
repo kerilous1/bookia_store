@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_theme_helpers.dart';
 import '../../../cart/presentation/cubit/cart_state_cubit.dart';
+import '../../../saved/presentation/cubit/saved_cubit.dart';
 import '../../domain/entities/product_entity.dart';
 
 class ProductDetailsPage extends StatefulWidget {
@@ -16,16 +17,17 @@ class ProductDetailsPage extends StatefulWidget {
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
-  bool _isFavorite = false;
+
   bool _isExpanded = false;
-  bool _isAddedToCart = false;
 
   @override
   Widget build(BuildContext context) {
+
     final cartCubit = context.read<CartStateCubit>();
     final product = widget.product;
     final cleanDescription = product.description.stripHtmlTags;
-    final isFavorite = cartCubit.isInSaved(product.id);
+    final savedCubit = context.watch<SavedCubit>();
+    final isSaved = savedCubit.isSaved(product.id);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -59,18 +61,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 ),
                 actions: [
                   Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(10),
                     child: GestureDetector(
-                      onTap: () =>
-                          context.read<CartStateCubit>().toggleSaved(product),
+                      onTap: () =>savedCubit.toggleSaved(product),
                       child: Icon(
-                        _isFavorite
+                        isSaved
                             ? Icons.favorite_rounded
                             : Icons.favorite_border_rounded,
-                        color: _isFavorite
+                        color: isSaved
                             ? AppColors.hotPink
                             : AppColors.textPrimary,
-                        size: 20,
+                        size: 22,
                       ),
                     ),
                   ),
@@ -357,12 +358,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           duration: const Duration(milliseconds: 300),
                           height: 56,
                           decoration: BoxDecoration(
-                            gradient: _isAddedToCart
+                            gradient: isAddedToCart
                                 ? null
                                 : AppGradients.primary,
-                            color: _isAddedToCart ? AppColors.success : null,
+                            color: isAddedToCart ? AppColors.success : null,
                             borderRadius: BorderRadius.circular(18),
-                            boxShadow: _isAddedToCart
+                            boxShadow: isAddedToCart
                                 ? []
                                 : AppShadows.glowPurple,
                           ),

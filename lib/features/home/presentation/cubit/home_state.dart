@@ -3,7 +3,9 @@ import 'package:bookia_store/features/home/domain/entities/product_entity.dart';
 import 'package:bookia_store/features/home/domain/entities/slider_entity.dart';
 
 abstract class HomeState {}
-class HomeInitial extends HomeState {}
+class HomeInitial extends HomeState {
+
+}
 
 class HomeLoding extends HomeState {}
 
