@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/app_theme_helpers.dart';
+import '../../../../core/utils/notification_helper.dart';
 import '../cubit/cart_state_cubit.dart';
 
 void showCheckoutDialog(BuildContext context) {
@@ -302,7 +303,15 @@ class _CheckoutDialogState extends State<CheckoutDialog> {
                               ),
                             ),
                             onPressed: () {
-                              //TODO : Implement checkout notification
+                              context.read<CartStateCubit>().clearCart();
+
+                              NotificationHelper.showOrderNotification();
+
+                              Navigator.pop(context);
+
+                              ScaffoldMessenger.of(context).clearSnackBars();
+
+
                             },
                             child: Ink(
                               decoration: BoxDecoration(
