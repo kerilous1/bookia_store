@@ -1,3 +1,4 @@
+import 'package:bookia_store/core/utils/notification_helper.dart';
 import 'package:bookia_store/features/saved/presentation/cubit/saved_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +16,8 @@ import 'main_layout.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await NotificationHelper.init();
 
   await Hive.initFlutter();
   await Hive.openBox('cart_box');

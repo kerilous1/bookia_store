@@ -74,7 +74,7 @@ class SavedPage extends StatelessWidget {
             );
           }
           return ListView.builder(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 30),
             physics: const BouncingScrollPhysics(),
             itemCount: savedProducts.length,
             itemBuilder: (context,index){

@@ -36,7 +36,7 @@ class SavedCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
                 product.image,
-                width: 75,
+                width: 80,
                 height: 100,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => Container(
@@ -120,7 +120,7 @@ class SavedCard extends StatelessWidget {
                                 ScaffoldMessenger.of(context).clearSnackBars();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text('You already have ${currentQuantity} in your cart !'),
+                                    content: Text('You already have $currentQuantity in your cart !'),
                                     behavior: SnackBarBehavior.floating,
                                     backgroundColor: AppColors.warning,
                                     duration: const Duration(seconds: 1),
@@ -148,7 +148,7 @@ class SavedCard extends StatelessWidget {
                               size: 18,
                             ),
                             label: Text(
-                              isAddedToCart ? 'In Cart "${currentQuantity}"' : 'Add to Cart',
+                              isAddedToCart ? 'In Cart "$currentQuantity"' : 'Add to Cart',
                               style: const TextStyle(
                                 color: AppColors.textPrimary,
                                 fontSize: 14,
