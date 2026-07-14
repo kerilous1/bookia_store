@@ -5,6 +5,12 @@ A comprehensive, modern bookstore application, designed to provide a smooth and 
 ## 🚀 Overview
 Bookia Store is designed to be a "lightweight and fast" (Performance-oriented) application. The application relies on the Separation of Concerns, where business logic is completely isolated from the User Interface (UI) and Data Sources.
 
+
+
+https://github.com/user-attachments/assets/0425ade5-e917-4cc4-a947-9225dfb28a5c
+
+
+
 ## 🛠️ Software Architecture (Clean Architecture)
 The project is divided into three main layers to ensure Clean Code:
 
