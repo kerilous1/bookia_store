@@ -19,4 +19,10 @@ class ApiConstants {
   static const String showWishlist = '$baseurl/wishlist';
   static const String addWishlist = '$baseurl/add-to-wishlist';
   static const String removeWishlist = '$baseurl/remove-from-wishlist';
+
+  static const String getProfile = '$baseurl/profile';
+  static const String updateProfile = '$baseurl/update-profile';
+  static const String deleteProfile = '$baseurl/delete-profile';
+  static const String updatePassword = '$baseurl/update-password';
+
 }

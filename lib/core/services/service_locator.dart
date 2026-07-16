@@ -12,6 +12,14 @@ import 'package:bookia_store/features/home/domain/usecases/get_sliders_usecase.d
 import 'package:bookia_store/features/home/domain/usecases/search_products_usecase.dart';
 import 'package:bookia_store/features/home/presentation/cubit/home_cubit.dart';
 import 'package:bookia_store/features/home/presentation/cubit/search_cubit.dart';
+import 'package:bookia_store/features/user/data/datasources/profile_remote_data_source.dart';
+import 'package:bookia_store/features/user/data/datasources/profile_remote_data_source_imp.dart';
+import 'package:bookia_store/features/user/data/repositories/profile_repository_impl.dart';
+import 'package:bookia_store/features/user/domain/repositories/profile_repository.dart';
+import 'package:bookia_store/features/user/domain/usecases/delete_account_use_case.dart';
+import 'package:bookia_store/features/user/domain/usecases/get_profile_use_case.dart';
+import 'package:bookia_store/features/user/domain/usecases/update_profile_use_case.dart';
+import 'package:bookia_store/features/user/presentation/cubit/profile_cubit.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -135,4 +143,32 @@ sl.registerLazySingleton<CartRemoteDataSource>(()=>CartRemoteDataSourceImpl(dio:
 sl.registerLazySingleton(
     ()=>SavedCubit()
 );
+
+///profile feature
+  //cbit
+  sl.registerFactory(()=>ProfileCubit(
+    getProfileUseCase: sl(),
+    updateProfileUseCase: sl(),
+    deleteAccountUseCase: sl(),
+    updatePasswordUseCase: sl(),
+  ));
+
+  //use cases
+  sl.registerLazySingleton(()=>GetProfileUseCase(sl()));
+  sl.registerLazySingleton(()=>UpdateProfileUseCase(sl()));
+  sl.registerLazySingleton(()=>DeleteAccountUseCase(sl()));
+  sl.registerLazySingleton(()=>UpdateProfileUseCase(sl()));
+
+  //repositories
+  sl.registerLazySingleton<ProfileRepository>(
+      ()=>ProfileRepositoryImpl(sl()),
+  );
+
+  //Data source
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+      ()=>ProfileRemoteDataSourceImp(dio: sl()),
+  );
+
+
+
 }
