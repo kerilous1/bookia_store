@@ -310,8 +310,24 @@ class _CheckoutDialogState extends State<CheckoutDialog> {
                               Navigator.pop(context);
 
                               ScaffoldMessenger.of(context).clearSnackBars();
-
-
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: const [
+                                      Icon(Icons.check_circle_rounded, color: Colors.white),
+                                      SizedBox(width: 12),
+                                      Text(
+                                        'Order placed successfully! 🎉', 
+                                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: AppColors.success,
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                  margin: const EdgeInsets.all(20),
+                                ),
+                              );
                             },
                             child: Ink(
                               decoration: BoxDecoration(

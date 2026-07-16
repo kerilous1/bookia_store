@@ -38,6 +38,7 @@ import '../../features/cart/data/cart_repository_impl.dart';
 import '../../features/cart/domain/repositories/cart_repository.dart';
 import '../../features/home/data/datasources/home_remote_data_source_impl.dart';
 import '../../features/saved/presentation/cubit/saved_cubit.dart';
+import '../../features/user/domain/usecases/change_password_use_case.dart';
 import '../network/api_constants.dart';
 final sl=GetIt.instance;
 
@@ -157,7 +158,7 @@ sl.registerLazySingleton(
   sl.registerLazySingleton(()=>GetProfileUseCase(sl()));
   sl.registerLazySingleton(()=>UpdateProfileUseCase(sl()));
   sl.registerLazySingleton(()=>DeleteAccountUseCase(sl()));
-  sl.registerLazySingleton(()=>UpdateProfileUseCase(sl()));
+  sl.registerLazySingleton(()=>ChangePasswordUseCase(sl()));
 
   //repositories
   sl.registerLazySingleton<ProfileRepository>(

@@ -1,7 +1,6 @@
-import 'package:bookia_store/features/user/domain/entities/user_entity.dart';
+import '../../domain/entities/user_entity.dart';
 
-class UserModel extends UserEntity {
-
+class UserModel extends ProfileEntity {
   const UserModel({
     super.id,
     required super.name,
@@ -9,32 +8,28 @@ class UserModel extends UserEntity {
     super.phone,
     super.address,
     super.image,
-});
+  });
 
-  //factory constructor to convert json to dart object
-  factory UserModel.fromJson(Map<String,dynamic> json) {
-    final data=json['data'];
-
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    final data = json['data'] ?? json;
     return UserModel(
-      id: data['id']??0,
-      name: data['name']??'',
-      email: data['email']??'',
-      phone: data['phone']??'',
-      address: data['address']??'',
+      id: data['id'],
+      name: data['name'] ?? '',
+      email: data['email'] ?? '',
+      phone: data['phone'],
+      address: data['address'],
       image: data['image'],
     );
   }
 
-  //convert dart object to map json
-  Map<String,dynamic> toJson(){
-    return{
-      'id':id,
-      'name':name,
-      'email':email,
-      'phone':phone,
-      'address':address,
-      'image':image,
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'phone': phone,
+      'address': address,
+      'image': image,
     };
   }
-
 }

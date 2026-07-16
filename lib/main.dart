@@ -11,16 +11,28 @@ import 'features/Authentication/data/datasources/auth_local_data_source.dart';
 import 'features/Authentication/presentation/cubit/auth_state_cubit.dart';
 import 'features/Authentication/presentation/pages/login_page.dart';
 import 'features/cart/presentation/cubit/cart_state_cubit.dart';
+import 'features/user/presentation/cubit/profile_cubit.dart';
 import 'main_layout.dart';
 
 
 void main() async {
+  print('1. ensureInitialized');
   WidgetsFlutterBinding.ensureInitialized();
 
-  await NotificationHelper.init();
+  print('2. NotificationHelper.init');
+  try {
+    await NotificationHelper.init();
+  } catch (e) {
+    print('Notification error: $e');
+  }
 
+  print('3. Hive.initFlutter');
   await Hive.initFlutter();
+  
+  print('4. Hive.openBox cart_box');
   await Hive.openBox('cart_box');
+  
+  print('5. Hive.openBox wishlist_box');
   await Hive.openBox('wishlist_box');
 
   // ── Set system UI overlay to match dark luxury theme ──
@@ -31,9 +43,19 @@ void main() async {
     systemNavigationBarIconBrightness: Brightness.light,
   ));
 
-
+  print('6. initServiceLocator');
   await initServiceLocator();
-  final String? token = await sl<AuthLocalDataSource>().getToken();
+  
+  print('7. getToken');
+  String? token;
+  try {
+    token = await sl<AuthLocalDataSource>().getToken();
+  } catch (e) {
+    // Ignore error or delete token if corrupted
+    print('Error reading token: $e');
+  }
+  
+  print('8. runApp');
   runApp(MyApp(isLoggedIn: token != null));
 }
 
@@ -50,6 +72,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context)=>sl<AuthCubit>()),
         BlocProvider(create: (context)=>sl<CartStateCubit>()),
         BlocProvider(create: (context)=>sl<SavedCubit>()),
+        BlocProvider(create: (context) => sl<ProfileCubit>()),
       ],
       child: MaterialApp(
         title: 'Bookia Store',

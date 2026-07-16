@@ -69,6 +69,17 @@ class SavedPage extends StatelessWidget {
                       letterSpacing: 0.5,
                     ),
                   ),
+                  const SizedBox(height: 8),
+
+                  const Text(
+                    'Tap the heart icon to save your favorite books.',
+                    style: TextStyle(
+                      color: AppColors.textMuted,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
                 ],
               ),
             );

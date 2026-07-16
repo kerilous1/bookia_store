@@ -1,15 +1,11 @@
 
-import 'package:bookia_store/core/network/api_constants.dart';
-import 'package:bookia_store/features/Authentication/data/models/user_model.dart';
-
-import 'package:bookia_store/features/user/domain/usecases/change_password_use_case.dart';
-
-import 'package:bookia_store/features/user/domain/usecases/update_profile_use_case.dart';
-
-import 'package:dartz/dartz.dart';
+import 'package:bookia_store/features/user/data/datasources/profile_remote_data_source.dart';
 import 'package:dio/dio.dart';
 
-import 'profile_remote_data_source.dart';
+import '../../../../core/network/api_constants.dart';
+import '../../domain/usecases/change_password_use_case.dart';
+import '../../domain/usecases/update_profile_use_case.dart';
+import '../models/user_model.dart';
 
 class ProfileRemoteDataSourceImp implements ProfileRemoteDataSource {
   final Dio dio;

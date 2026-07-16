@@ -1,11 +1,14 @@
-import 'package:bookia_store/core/errors/failures.dart';
-import 'package:bookia_store/features/Authentication/domain/entities/user_entity.dart';
-import 'package:bookia_store/features/user/data/datasources/profile_remote_data_source.dart';
-import 'package:bookia_store/features/user/domain/repositories/profile_repository.dart';
-import 'package:bookia_store/features/user/domain/usecases/change_password_use_case.dart';
-import 'package:bookia_store/features/user/domain/usecases/update_profile_use_case.dart';
+
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+
+import '../../../../core/errors/failures.dart';
+import '../../domain/entities/user_entity.dart';
+import '../../domain/repositories/profile_repository.dart';
+import '../../domain/usecases/change_password_use_case.dart';
+import '../../domain/usecases/update_profile_use_case.dart';
+import '../datasources/profile_remote_data_source.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
   final ProfileRemoteDataSource remoteDataSource;
@@ -13,20 +16,19 @@ class ProfileRepositoryImpl implements ProfileRepository {
   ProfileRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<Either<Failure, UserEntity>> getProfile() async {
+  Future<Either<Failure, ProfileEntity>> getProfile() async {
     try {
       final userModel = await remoteDataSource.getProfile();
       return Right(userModel);
     } on DioException catch (e) {
       return Left(ServerFailure(e.toString()));
-    }
-    cast(e) {
+    }catch(e) {
       return Left(ServerFailure(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, UserEntity>> updateProfile(
+  Future<Either<Failure, ProfileEntity>> updateProfile(
     UpdateProfileParams params,
   ) async {
     try {

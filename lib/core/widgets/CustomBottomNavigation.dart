@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
+import '../utils/app_theme_helpers.dart';
 
 class CustomBottomNavigation extends StatelessWidget {
   final int indexSelected;
   final Function(int) onItemSelected;
+  final int cartItemCount;
 
   const CustomBottomNavigation({
     super.key,
     required this.indexSelected,
     required this.onItemSelected,
+    this.cartItemCount = 0,
   });
 
   @override
@@ -81,20 +84,51 @@ class CustomBottomNavigation extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    ShaderMask(
-                      shaderCallback: (bounds) => LinearGradient(
-                        colors: isSelected
-                            ? [
-                                const Color(0xFF7C3AED),
-                                const Color(0xFFDB2777),
-                              ]
-                            : [AppColors.textMuted, AppColors.textMuted],
-                      ).createShader(bounds),
-                      child: Icon(
-                        navItems[index]['icon'],
-                        color: Colors.white,
-                        size: 24,
-                      ),
+                    //cart badge
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        ShaderMask(
+                          shaderCallback: (bounds) => LinearGradient(
+                            colors: isSelected
+                                ? [
+                                    const Color(0xFF7C3AED),
+                                    const Color(0xFFDB2777),
+                                  ]
+                                : [AppColors.textMuted, AppColors.textMuted],
+                          ).createShader(bounds),
+                          child: Icon(
+                            navItems[index]['icon'],
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+                        if (index == 2 && cartItemCount > 0)
+                          Positioned(
+                            right: -6,
+                            top: -4,
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                gradient: AppGradients.creative,
+                                shape: BoxShape.circle,
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 16,
+                                minHeight: 16,
+                              ),
+                              child: Text(
+                                cartItemCount > 9 ? '9+' : '$cartItemCount',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                     if (isSelected) ...[
                       const SizedBox(width: 8),

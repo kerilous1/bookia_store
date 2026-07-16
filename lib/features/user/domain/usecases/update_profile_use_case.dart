@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../../../Authentication/domain/entities/user_entity.dart';
+import '../entities/user_entity.dart';
 import '../repositories/profile_repository.dart';
 
 class UpdateProfileUseCase {
@@ -10,7 +11,7 @@ class UpdateProfileUseCase {
 
   UpdateProfileUseCase(this.repository);
 
-  Future<Either<Failure, UserEntity>> call(UpdateProfileParams params) async {
+  Future<Either<Failure, ProfileEntity>> call(UpdateProfileParams params) async {
     return await repository.updateProfile(params);
   }
 }

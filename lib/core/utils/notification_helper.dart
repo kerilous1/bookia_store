@@ -22,7 +22,7 @@ class NotificationHelper {
       },
     );
 
-    await _notificationsPlugin
+    _notificationsPlugin
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
 

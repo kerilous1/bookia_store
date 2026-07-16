@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/app_colors.dart';
@@ -16,11 +17,21 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
+  }
+
+  //debounce search
+  void _onSearchChanged(String query) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      context.read<SearchCubit>().searchBooks(query);
+    });
   }
 
   @override
@@ -63,8 +74,8 @@ class _SearchPageState extends State<SearchPage> {
                   },
                 ),
               ),
+              onChanged: _onSearchChanged,
               onSubmitted: (query) {
-
                 context.read<SearchCubit>().searchBooks(query);
               },
             ),

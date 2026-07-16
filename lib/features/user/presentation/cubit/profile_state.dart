@@ -9,7 +9,7 @@ final class ProfileInitial extends ProfileState {}
 class GetProfileLoading extends ProfileState {}
 
 class GetProfileSuccess extends ProfileState {
-  final UserEntity user;
+  final ProfileEntity user;
 
   GetProfileSuccess(this.user);
 }
@@ -23,7 +23,7 @@ class GetProfileError extends ProfileState {
 class UpdateProfileLoading extends ProfileState {}
 
 class UpdateProfileSuccess extends ProfileState {
-  final UserEntity user;
+  final ProfileEntity user;
   UpdateProfileSuccess(this.user);
 }
 

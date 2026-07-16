@@ -1,12 +1,11 @@
-import 'package:bloc/bloc.dart';
-import 'package:bookia_store/features/user/domain/usecases/update_profile_use_case.dart';
-import 'package:dartz/dartz.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../Authentication/domain/entities/user_entity.dart';
+import '../../domain/entities/user_entity.dart';
 import '../../domain/usecases/change_password_use_case.dart';
 import '../../domain/usecases/delete_account_use_case.dart';
 import '../../domain/usecases/get_profile_use_case.dart';
+import '../../domain/usecases/update_profile_use_case.dart';
 
 part 'profile_state.dart';
 
@@ -23,7 +22,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     required this.updatePasswordUseCase,
   }) : super(ProfileInitial());
 
-  UserEntity? curntUser;
+  ProfileEntity? curntUser;
 
   Future<void> getProfile() async {
     emit(GetProfileLoading());

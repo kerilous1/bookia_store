@@ -6,6 +6,7 @@ import 'features/cart/presentation/cubit/cart_state_cubit.dart';
 import 'features/cart/presentation/pages/cart_page.dart';
 import 'features/home/presentation/pages/home_page.dart';
 import 'features/saved/presentation/pages/saved_page.dart';
+import 'features/user/presentation/pages/profile_page.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -28,18 +29,22 @@ class _MainLayoutState extends State<MainLayout> {
       //cart builder
       const CartPage(),
 
-      const Center(
-        child: Text(
-          "Profile Page",
-          style: TextStyle(color: AppColors.textPrimary, fontSize: 18),
-        ),
-      ),
+      //profile builder
+      ProfilePage(),
     ];
+    //get cart count for badge
+    final cartState = context.watch<CartStateCubit>().state;
+    int cartCount = 0;
+    if(cartState is CartUpdateState){
+      cartCount = cartState.cartProducts.length;
+    }
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: pages[currentIndex],
       bottomNavigationBar: CustomBottomNavigation(
         indexSelected: currentIndex,
+        cartItemCount: cartCount,
         onItemSelected: (index) {
           setState(() {
             currentIndex = index;

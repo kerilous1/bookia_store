@@ -1,4 +1,4 @@
-class UserEntity {
+class ProfileEntity {
   final int? id;
   final String name;
   final String email;
@@ -6,7 +6,7 @@ class UserEntity {
   final String? address;
   final String? image;
 
-  const UserEntity({
+  const ProfileEntity({
     this.id,
     required this.name,
     required this.email,
