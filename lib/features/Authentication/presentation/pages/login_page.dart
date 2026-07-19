@@ -167,7 +167,7 @@ class _LoginPageState extends State<LoginPage>
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const MainLayout()), // أو HomePage حسب ما تسميه
+                                        const MainLayout()),
                                 (route) => false,
                               );
                             } else if (state is AuthStateError) {

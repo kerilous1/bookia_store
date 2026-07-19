@@ -227,7 +227,7 @@ class _VerificationPageState extends State<VerificationPage>
                         BlocConsumer<AuthCubit, AuthState>(
                           listener: (context, state) {
                             if (ModalRoute.of(context)?.isCurrent == true) {
-                              // 1. حالة نجاح التحقق من الإيميل
+                              //success state
                               if (state is AuthStateVerifySuccess) {
                                 ScaffoldMessenger.of(context).clearSnackBars();
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -265,6 +265,8 @@ class _VerificationPageState extends State<VerificationPage>
                                     ),
                                   ),
                                 );
+
+                                //error state
                               } else if (state is AuthStateError) {
                                 ScaffoldMessenger.of(context).clearSnackBars();
                                 ScaffoldMessenger.of(context).showSnackBar(
